@@ -7,7 +7,7 @@ class MaintenanceRecordDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final id = ModalRoute.of(context)!.settings.arguments as String;
+    final id = ModalRoute.of(context)!.settings.arguments as int;
     final viewModel = Provider.of<CarMaintenanceViewModel>(context);
     final record = viewModel.getRecord(id);
 
@@ -45,7 +45,7 @@ class MaintenanceRecordDetailsScreen extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, "update/${record?.id}");
+                          Navigator.pushNamed(context, "/update", arguments: id);
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue),
@@ -72,7 +72,7 @@ class MaintenanceRecordDetailsScreen extends StatelessWidget {
   }
 
   void _showDeleteDialog(
-      BuildContext context, CarMaintenanceViewModel viewModel, String id) {
+      BuildContext context, CarMaintenanceViewModel viewModel, int id) {
     showDialog(
       context: context,
       builder: (context) {

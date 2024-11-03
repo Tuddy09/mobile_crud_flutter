@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_crud_flutter/views/add_view.dart';
 import 'package:mobile_crud_flutter/views/read_view.dart';
+import 'package:mobile_crud_flutter/views/update_view.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/car_maintenance_viewmodel.dart';
 import 'views/home_view.dart';
@@ -22,8 +24,10 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => HomeView(),
-          '/details': (context) => MaintenanceRecordDetailsScreen(),
+          '/': (context) => const HomeView(),
+          '/details': (context) => const MaintenanceRecordDetailsScreen(),
+          '/addNewRecord': (context) => const AddNewRecordScreen(),
+          '/update': (context) => const UpdateRecordScreen(),
         },
       ),
     );

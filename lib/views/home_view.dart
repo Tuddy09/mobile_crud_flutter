@@ -4,6 +4,8 @@ import '../viewmodels/car_maintenance_viewmodel.dart';
 import '../models/car_maintenance_record.dart';
 
 class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<CarMaintenanceViewModel>(context);

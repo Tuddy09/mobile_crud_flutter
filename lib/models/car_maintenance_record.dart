@@ -1,5 +1,5 @@
 class CarMaintenanceRecord {
-  final String id;
+  final int id;
   final String carModel;
   final String serviceType;
   final String serviceDate;
@@ -14,7 +14,7 @@ class CarMaintenanceRecord {
   });
 
   CarMaintenanceRecord copyWith({
-    String? id,
+    int? id,
     String? carModel,
     String? serviceType,
     String? serviceDate,

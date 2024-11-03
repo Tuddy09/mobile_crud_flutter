@@ -7,70 +7,70 @@ import '../models/car_maintenance_record.dart';
 class CarMaintenanceViewModel extends ChangeNotifier {
   final List<CarMaintenanceRecord> _records = [
     CarMaintenanceRecord(
-      id: '1',
+      id: 1,
       carModel: 'Toyota Corolla',
       serviceType: 'Oil Change',
       serviceDate: '2021-10-01',
       serviceNotes: 'Changed oil and filter',
     ),
     CarMaintenanceRecord(
-      id: '2',
+      id: 2,
       carModel: 'Honda Civic',
       serviceType: 'Tire Rotation',
       serviceDate: '2021-10-02',
       serviceNotes: 'Rotated tires',
     ),
     CarMaintenanceRecord(
-      id: '3',
+      id: 3,
       carModel: 'Ford F-150',
       serviceType: 'Brake Inspection',
       serviceDate: '2021-10-03',
       serviceNotes: 'Inspected brakes',
     ),
     CarMaintenanceRecord(
-      id: '4',
+      id: 4,
       carModel: 'Chevrolet Silverado',
       serviceType: 'Air Filter Replacement',
       serviceDate: '2021-10-04',
       serviceNotes: 'Replaced air filter',
     ),
     CarMaintenanceRecord(
-      id: '5',
+      id: 5,
       carModel: 'Jeep Wrangler',
       serviceType: 'Coolant Flush',
       serviceDate: '2021-10-05',
       serviceNotes: 'Flushed coolant',
     ),
     CarMaintenanceRecord(
-      id: '6',
+      id: 6,
       carModel: 'Subaru Outback',
       serviceType: 'Battery Replacement',
       serviceDate: '2021-10-06',
       serviceNotes: 'Replaced battery',
     ),
     CarMaintenanceRecord(
-      id: '7',
+      id: 7,
       carModel: 'Nissan Altima',
       serviceType: 'Spark Plug Replacement',
       serviceDate: '2021-10-07',
       serviceNotes: 'Replaced spark plugs',
     ),
     CarMaintenanceRecord(
-      id: '8',
+      id: 8,
       carModel: 'Hyundai Sonata',
       serviceType: 'Transmission Fluid Change',
       serviceDate: '2021-10-08',
       serviceNotes: 'Changed transmission fluid',
     ),
     CarMaintenanceRecord(
-      id: '9',
+      id: 9,
       carModel: 'Kia Sportage',
       serviceType: 'Timing Belt Replacement',
       serviceDate: '2021-10-09',
       serviceNotes: 'Replaced timing belt',
     ),
     CarMaintenanceRecord(
-      id: '10',
+      id: 10,
       carModel: 'Mazda CX-5',
       serviceType: 'Wheel Alignment',
       serviceDate: '2021-10-10',
@@ -81,9 +81,23 @@ class CarMaintenanceViewModel extends ChangeNotifier {
   UnmodifiableListView<CarMaintenanceRecord> get records =>
       UnmodifiableListView(_records);
 
-  void addRecord(CarMaintenanceRecord record) {
-    _records.add(record);
+  void addRecord(String carModel, String serviceType, String serviceDate,
+      String serviceNotes) {
+    final newRecord = CarMaintenanceRecord(
+      id: _newRecordId(),
+      carModel: carModel,
+      serviceType: serviceType,
+      serviceDate: serviceDate,
+      serviceNotes: serviceNotes,
+    );
+    _records.add(newRecord);
     notifyListeners();
+  }
+
+  int _newRecordId() {
+    final ids = _records.map((record) => record.id).toList();
+    return (ids.reduce((value, element) => value > element ? value : element) +
+        1);
   }
 
   void updateRecord(CarMaintenanceRecord record) {
@@ -94,15 +108,15 @@ class CarMaintenanceViewModel extends ChangeNotifier {
     }
   }
 
-  void deleteRecord(String id) {
+  void deleteRecord(int id) {
     _records.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 
-  CarMaintenanceRecord? getRecord(String id) {
+  CarMaintenanceRecord? getRecord(int id) {
     return _records.firstWhere((element) => element.id == id,
         orElse: () => CarMaintenanceRecord(
-            id: '',
+            id: -1,
             carModel: '',
             serviceType: '',
             serviceDate: '',
