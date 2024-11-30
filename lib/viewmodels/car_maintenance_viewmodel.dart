@@ -1,88 +1,27 @@
 import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
-
 import '../models/car_maintenance_record.dart';
+import '../repository/car_maintenance_repository.dart';
 
 class CarMaintenanceViewModel extends ChangeNotifier {
-  final List<CarMaintenanceRecord> _records = [
-    CarMaintenanceRecord(
-      id: 1,
-      carModel: 'Toyota Corolla',
-      serviceType: 'Oil Change',
-      serviceDate: '2021-10-01',
-      serviceNotes: 'Changed oil and filter',
-    ),
-    CarMaintenanceRecord(
-      id: 2,
-      carModel: 'Honda Civic',
-      serviceType: 'Tire Rotation',
-      serviceDate: '2021-10-02',
-      serviceNotes: 'Rotated tires',
-    ),
-    CarMaintenanceRecord(
-      id: 3,
-      carModel: 'Ford F-150',
-      serviceType: 'Brake Inspection',
-      serviceDate: '2021-10-03',
-      serviceNotes: 'Inspected brakes',
-    ),
-    CarMaintenanceRecord(
-      id: 4,
-      carModel: 'Chevrolet Silverado',
-      serviceType: 'Air Filter Replacement',
-      serviceDate: '2021-10-04',
-      serviceNotes: 'Replaced air filter',
-    ),
-    CarMaintenanceRecord(
-      id: 5,
-      carModel: 'Jeep Wrangler',
-      serviceType: 'Coolant Flush',
-      serviceDate: '2021-10-05',
-      serviceNotes: 'Flushed coolant',
-    ),
-    CarMaintenanceRecord(
-      id: 6,
-      carModel: 'Subaru Outback',
-      serviceType: 'Battery Replacement',
-      serviceDate: '2021-10-06',
-      serviceNotes: 'Replaced battery',
-    ),
-    CarMaintenanceRecord(
-      id: 7,
-      carModel: 'Nissan Altima',
-      serviceType: 'Spark Plug Replacement',
-      serviceDate: '2021-10-07',
-      serviceNotes: 'Replaced spark plugs',
-    ),
-    CarMaintenanceRecord(
-      id: 8,
-      carModel: 'Hyundai Sonata',
-      serviceType: 'Transmission Fluid Change',
-      serviceDate: '2021-10-08',
-      serviceNotes: 'Changed transmission fluid',
-    ),
-    CarMaintenanceRecord(
-      id: 9,
-      carModel: 'Kia Sportage',
-      serviceType: 'Timing Belt Replacement',
-      serviceDate: '2021-10-09',
-      serviceNotes: 'Replaced timing belt',
-    ),
-    CarMaintenanceRecord(
-      id: 10,
-      carModel: 'Mazda CX-5',
-      serviceType: 'Wheel Alignment',
-      serviceDate: '2021-10-10',
-      serviceNotes: 'Aligned wheels',
-    ),
-  ];
+  final CarMaintenanceRepository _repository = CarMaintenanceRepository();
+
+  List<CarMaintenanceRecord> _records = [];
 
   UnmodifiableListView<CarMaintenanceRecord> get records =>
       UnmodifiableListView(_records);
 
-  void addRecord(String carModel, String serviceType, String serviceDate,
-      String serviceNotes) {
+  CarMaintenanceViewModel() {
+    _loadRecords();
+  }
+
+  Future<void> _loadRecords() async {
+    _records = await _repository.getRecords();
+    notifyListeners();
+  }
+
+  Future<void> addRecord(String carModel, String serviceType,
+      String serviceDate, String serviceNotes) async {
     final newRecord = CarMaintenanceRecord(
       id: _newRecordId(),
       carModel: carModel,
@@ -90,17 +29,21 @@ class CarMaintenanceViewModel extends ChangeNotifier {
       serviceDate: serviceDate,
       serviceNotes: serviceNotes,
     );
+    await _repository.insertRecord(newRecord);
     _records.add(newRecord);
     notifyListeners();
   }
 
   int _newRecordId() {
     final ids = _records.map((record) => record.id).toList();
-    return (ids.reduce((value, element) => value > element ? value : element) +
-        1);
+    return (ids.isNotEmpty
+            ? ids.reduce((value, element) => value > element ? value : element)
+            : 0) +
+        1;
   }
 
-  void updateRecord(CarMaintenanceRecord record) {
+  Future<void> updateRecord(CarMaintenanceRecord record) async {
+    await _repository.updateRecord(record);
     final index = _records.indexWhere((element) => element.id == record.id);
     if (index >= 0) {
       _records[index] = record;
@@ -108,7 +51,8 @@ class CarMaintenanceViewModel extends ChangeNotifier {
     }
   }
 
-  void deleteRecord(int id) {
+  Future<void> deleteRecord(int id) async {
+    await _repository.deleteRecord(id);
     _records.removeWhere((element) => element.id == id);
     notifyListeners();
   }
@@ -116,10 +60,11 @@ class CarMaintenanceViewModel extends ChangeNotifier {
   CarMaintenanceRecord? getRecord(int id) {
     return _records.firstWhere((element) => element.id == id,
         orElse: () => CarMaintenanceRecord(
-            id: -1,
-            carModel: '',
-            serviceType: '',
-            serviceDate: '',
-            serviceNotes: ''));
+              id: -1,
+              carModel: '',
+              serviceType: '',
+              serviceDate: '',
+              serviceNotes: '',
+            ));
   }
 }

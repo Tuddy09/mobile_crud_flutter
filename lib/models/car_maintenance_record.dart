@@ -28,4 +28,14 @@ class CarMaintenanceRecord {
       serviceNotes: serviceNotes ?? this.serviceNotes,
     );
   }
+
+  Map<String, Object?> toMap() {
+    return {
+      'id': id,
+      'carModel': carModel,
+      'serviceType': serviceType,
+      'serviceDate': serviceDate,
+      'serviceNotes': serviceNotes,
+    };
+  }
 }
