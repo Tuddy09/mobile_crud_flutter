@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class CarMaintenanceRecord {
   final int id;
   final String carModel;
@@ -29,6 +31,16 @@ class CarMaintenanceRecord {
     );
   }
 
+  factory CarMaintenanceRecord.fromMap(Map<String, dynamic> map) {
+    return CarMaintenanceRecord(
+      id: map ['id'],
+      carModel: map['carModel'],
+      serviceType: map['serviceType'],
+      serviceDate: map['serviceDate'],
+      serviceNotes: map['serviceNotes'],
+    );
+  }
+
   Map<String, Object?> toMap() {
     return {
       'id': id,
@@ -38,4 +50,6 @@ class CarMaintenanceRecord {
       'serviceNotes': serviceNotes,
     };
   }
+
+  toJson() => json.encode(toMap());
 }
