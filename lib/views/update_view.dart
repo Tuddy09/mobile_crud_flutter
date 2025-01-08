@@ -67,8 +67,7 @@ class UpdateRecordScreenState extends State<UpdateRecordScreen> {
 
   void _updateRecord() {
     if (_validateFields()) {
-      final viewModel =
-          Provider.of<CarMaintenanceViewModel>(context, listen: false);
+      final viewModel = Provider.of<CarMaintenanceViewModel>(context, listen: false);
       final updatedRecord = CarMaintenanceRecord(
         id: recordId,
         carModel: carModel,
@@ -76,8 +75,31 @@ class UpdateRecordScreenState extends State<UpdateRecordScreen> {
         serviceDate: serviceDate,
         serviceNotes: serviceNotes,
       );
-      viewModel.updateRecord(updatedRecord);
-      Navigator.pop(context); // Navigate back to the previous screen
+
+      if (viewModel.isOffline) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Offline'),
+              content: const Text('You are currently offline. The record will be updated locally and synced when you are back online.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    viewModel.updateRecord(updatedRecord);
+                    Navigator.pop(context); // Navigate back to the previous screen
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        viewModel.updateRecord(updatedRecord);
+        Navigator.pop(context); // Navigate back to the previous screen
+      }
     }
   }
 

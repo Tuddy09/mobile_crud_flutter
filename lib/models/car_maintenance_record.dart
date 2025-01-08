@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class CarMaintenanceRecord {
-  final int id;
+  late final int id;
   final String carModel;
   final String serviceType;
   final String serviceDate;

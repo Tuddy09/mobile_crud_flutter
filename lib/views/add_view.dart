@@ -46,10 +46,31 @@ class AddNewRecordScreenState extends State<AddNewRecordScreen> {
 
   void _saveRecord() {
     if (_validateFields()) {
-      final viewModel =
-      Provider.of<CarMaintenanceViewModel>(context, listen: false);
-      viewModel.addRecord(carModel, serviceType, serviceDate, serviceNotes);
-      Navigator.pop(context); // Navigate back to the previous screen
+      final viewModel = Provider.of<CarMaintenanceViewModel>(context, listen: false);
+      if (viewModel.isOffline) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Offline'),
+              content: const Text('You are currently offline. The record will be saved locally and synced when you are back online.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    viewModel.addRecord(carModel, serviceType, serviceDate, serviceNotes);
+                    Navigator.pop(context); // Navigate back to the previous screen
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        viewModel.addRecord(carModel, serviceType, serviceDate, serviceNotes);
+        Navigator.pop(context); // Navigate back to the previous screen
+      }
     }
   }
 

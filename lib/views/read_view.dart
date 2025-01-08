@@ -73,30 +73,52 @@ class MaintenanceRecordDetailsScreen extends StatelessWidget {
 
   void _showDeleteDialog(
       BuildContext context, CarMaintenanceViewModel viewModel, int id) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Confirm Delete"),
-          content: const Text("Are you sure you want to delete this record?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                viewModel.deleteRecord(id);
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Go back to the previous screen
-              },
-              child: const Text("Delete", style: TextStyle(color: Colors.red)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text("Cancel"),
-            ),
-          ],
-        );
-      },
-    );
+    if (viewModel.isOffline) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Offline'),
+            content: const Text('You are currently offline. The record will be deleted locally and synced when you are back online.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  viewModel.deleteRecord(id);
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop(); // Go back to the previous screen
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Confirm Delete"),
+            content: const Text("Are you sure you want to delete this record?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  viewModel.deleteRecord(id);
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop(); // Go back to the previous screen
+                },
+                child: const Text("Delete", style: TextStyle(color: Colors.red)),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: const Text("Cancel"),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
